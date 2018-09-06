@@ -1,10 +1,13 @@
 {
-  "name": "iq",
+  "name": "jsiq",
   "version": "0.0.1",
   "description": "Dotnet LINQ inspired query methods for iterators",
   "main": "lib/iq.js",
   "author": "zaverden",
   "license": "MIT",
+  "keywords": [
+    "linq", "query", "iterator", "iterable"
+  ],
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^5.2.0"
