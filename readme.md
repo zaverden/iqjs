@@ -7,10 +7,10 @@ Inspired by dotnet LINQ I decided to adopt it to use with ES6 iterators.
 All methods are implemented as pure functions. And you can always use then as is.
 
 But for convenience and more readable code `jsiq` provides ability to embed methods to native JS iterable classes: `Array`, `Set`, `Map`.
-After calling the `embed` method, you can start call `jsiq` right from your collections:
+After calling the `embed` method, you can start call `jsiq` methods right from your collections:
 
 ```javascript
-require('jsiq').embed();
+require('jsiq/lib/embed')();
 const personsArray = await loadPersonsAsync();
 const underageIterator = personsArray.where(p => p.age < 18);
 ```
@@ -19,7 +19,7 @@ const underageIterator = personsArray.where(p => p.age < 18);
 All methods can be chained to build complex queries on your collections:
 
 ```javascript
-require('jsiq').embed();
+require('jsiq/lib/embed')();
 const personsArray = await loadPersonsAsync();
 const reportItems = personsArray
     .where(p => p.age > 18)
@@ -32,6 +32,15 @@ const reportItems = personsArray
     .orderBy(p => p.childrenCount)
     .toArray();
 ```
+
+### Basic usage
+And you still can use all methods directly by passing iterators:
+```javascript
+const { where, toArray } = require('jsiq');
+const personsMap = getPersonsMap();
+const underage = toArray(where(personsMap.values(), p => p.age < 18));
+```
+
 
 ## Methods
 ### where

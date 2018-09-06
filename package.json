@@ -17,7 +17,7 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint --ignore-path .gitignore .",
     "test": "mocha tests/**/*.tests.js"
   }
 }

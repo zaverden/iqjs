@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const SelfIterable = require('../lib/selfIterable');
+const SelfIterable = require('../../lib/selfIterable');
 
 describe('SelfIterable', function () {
   it('should return self from Symbol.iterator', function () {
