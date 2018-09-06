@@ -6,12 +6,17 @@
   "author": "zaverden",
   "license": "MIT",
   "keywords": [
-    "linq", "query", "iterator", "iterable"
+    "linq",
+    "query",
+    "iterator",
+    "iterable"
   ],
   "devDependencies": {
     "chai": "^4.1.2",
+    "eslint": "^5.5.0",
     "mocha": "^5.2.0"
   },
   "scripts": {
+    "lint": "eslint"
   }
 }
