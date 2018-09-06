@@ -17,6 +17,7 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "mocha tests/**/*.tests.js"
   }
 }
