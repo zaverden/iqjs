@@ -1,0 +1,14 @@
+{
+  "name": "iq",
+  "version": "0.0.1",
+  "description": "Dotnet LINQ inspired query methods for iterators",
+  "main": "lib/iq.js",
+  "author": "zaverden",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  },
+  "scripts": {
+  }
+}
