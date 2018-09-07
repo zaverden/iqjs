@@ -1,77 +1,94 @@
 const { expect } = require('chai');
 const iq = require('../../lib/iq');
 const embed = require('../../lib/embed');
-const SelfIterable = require('../../lib/selfIterable');
-const { gen } = require('../test-help');
+const { IterableIterator, valueProviders } = require('../test-help');
 
 describe('embed', function () {
+  afterEach(function () {
+    embed.revert();
+  });
+
+  describe('all', function () {
+    describe('should embed to native', function () {
+      const { custom, ...native } = valueProviders;
+      buildExpectAllMethodsExistSuite(embed, getAllValueProviders(native));
+      buildExpectAllMethodsMissedSuite(embed, custom);
+    });
+
+    describe('should revert', function () {
+      buildExpectAllMethodsMissedSuite(() => {
+        embed();
+        embed.toIterableClass(IterableIterator);
+        embed.revert();
+      }, getAllValueProviders());
+    });
+  });
+
   describe('generators', function () {
-    it('should be embedded to generators', function () {
-      embed.toGenerators();
-      const g = gen(1);
-      expectAllMethods(g);
-    });
-
-    it('should correctly process repeated embed', function () {
-      embed.toGenerators();
-      expect(embed.toGenerators()).to.be.false;
-      expect(() => embed.toGenerators(false)).to.throw(/Duplicated embedding/);
-    });
+    buildExpectAllMethodsExistSuite(embed.toGenerators, valueProviders.gen);
   });
 
-  describe('inner iterators', function () {
-    it('should be embedded to inner iterators', function () {
-      embed.self();
-      const it = new SelfIterable();
-      expectAllMethods(it);
-    });
-
-    it('should correctly process repeated embed', function () {
-      embed.self();
-      expect(embed.self()).to.be.false;
-      expect(() => embed.self(false)).to.throw(/Duplicated embedding/);
-    });
+  describe('inner IQ iterators', function () {
+    buildExpectAllMethodsExistSuite(embed.self, valueProviders.inner);
   });
 
-  describe('collections', function () {
-    it('should be embedded to Array', function () {
-      embed.toIterableClass(Array);
-      const arr = [];
-      expectAllMethods(arr);
-      expectAllMethods(arr[Symbol.iterator]());
-    });
+  describe('Arrays', function () {
+    buildExpectAllMethodsExistSuite(embed.toIterableClass.bind(null, Array), valueProviders.array);
+  });
 
-    it('should be embedded to Set', function () {
-      embed.toIterableClass(Set);
-      const set = new Set();
-      expectAllMethods(set);
-      expectAllMethods(set[Symbol.iterator]());
-      expectAllMethods(set.values());
-      expectAllMethods(set.keys());
-      expectAllMethods(set.entries());
-    });
+  describe('Set', function () {
+    buildExpectAllMethodsExistSuite(embed.toIterableClass.bind(null, Set), valueProviders.set);
+  });
 
-    it('should be embedded to Map', function () {
-      embed.toIterableClass(Map);
-      const map = new Map();
-      expectAllMethods(map);
-      expectAllMethods(map[Symbol.iterator]());
-      expectAllMethods(map.values());
-      expectAllMethods(map.keys());
-      expectAllMethods(map.entries());
-    });
+  describe('Map', function () {
+    buildExpectAllMethodsExistSuite(embed.toIterableClass.bind(null, Map), valueProviders.map);
 
-    it('should correctly process repeated embed', function () {
-      embed.toIterableClass(Array);
-      expect(embed.toIterableClass(Array)).to.be.false;
-      expect(() => embed.toIterableClass(Array, false)).to.throw(/Duplicated embedding/);
-    });
+  });
+
+  describe('Custom IterableIterator', function () {
+    buildExpectAllMethodsExistSuite(embed.toIterableClass.bind(null, IterableIterator), valueProviders.custom);
   });
 });
 
-function expectAllMethods(obj) {
-  for (let method of Object.keys(iq)) {
-    expect(obj).has.property(method);
-    expect(obj[method]).to.be.a('function');
+function buildExpectAllMethodsExistSuite(embedFn, getFns, prefix = '') {
+  for (let { name: method, key } of Object.values(iq)) {
+    for (let [title, getFn] of Object.entries(getFns)) {
+      it(`${prefix}IQ.${method} should be in ${title}`, function () {
+        embedFn();
+        const obj = getFn();
+        expect(obj).has.property(method);
+        expect(obj[method]).to.be.a('function');
+        expect(obj[method]).has.property(embed.iqKey, key);
+      });
+    }
   }
+  it('should correctly process repeated embed', checkRepeatedEmbed(embedFn));
+}
+
+
+function buildExpectAllMethodsMissedSuite(embedFn, getFns) {
+  for (let { name: method } of Object.values(iq)) {
+    for (let [title, getFn] of Object.entries(getFns)) {
+      it(`IQ.${method} should not be in ${title}`, function () {
+        this.timeout(100000);
+        embedFn();
+        const obj = getFn();
+        if (obj[method]) {
+          expect(obj[method]).does.not.have.property(embed.iqKey);
+        }
+      });
+    }
+  }
+}
+
+function checkRepeatedEmbed(embedFn) {
+  return () => {
+    expect(embedFn()).to.be.true;
+    expect(embedFn()).to.be.false;
+    expect(() => embedFn(false)).to.throw(/Duplicated embedding/);
+  };
+}
+
+function getAllValueProviders(vp) {
+  return Object.assign({}, ...Object.values(vp || valueProviders));
 }
