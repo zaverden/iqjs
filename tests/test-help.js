@@ -17,6 +17,22 @@ class IterableIterator {
   }
 }
 
+class Iterator {
+  constructor(n) {
+    this.i = 0;
+    this.n = n;
+  }
+  next() {
+    if (this.i < this.n) {
+      return {
+        value: ++this.i,
+        done: false
+      };
+    }
+    return { done: true };
+  }
+}
+
 const valueProviders = {
   gen: { 'generator': () => gen(1) },
   inner: { 'IQ iterator': () => new SelfIterable() },
@@ -44,5 +60,6 @@ const valueProviders = {
 module.exports = exports = {
   gen,
   IterableIterator,
+  Iterator,
   valueProviders
 };
