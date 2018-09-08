@@ -44,7 +44,13 @@ const underage = toArray(where(personsMap.values(), p => p.age < 18));
 
 ## Methods
 ### where
-Signature: `where<T>(source: Iterator<T>, predicate: (item: T) => boolean) => Iterator<T>`
+Signature:
+```typescript
+where<T>(
+    source: Iterator<T>,
+    predicate: (item: T) => boolean
+) => Iterator<T>
+```
 
 Filters `source` iterator by `predicate`.
 
@@ -56,7 +62,13 @@ Embedded example:
 
 
 ### select
-Signature: `select<T, TResult>(source: Iterator<T>, predicate: (item: T) => TResult) => Iterator<TResult>`
+Signature:
+```typescript
+select<T, TResult>(
+    source: Iterator<T>,
+    predicate: (item: T) => TResult
+) => Iterator<TResult>
+```
 
 Converts items from `source` using `selector`.
 
@@ -69,10 +81,49 @@ Embedded example:
 ### toArray
 Signature: `toArray<T>(source: Iterator<T>) => T[]`
 
-Materialize iterator to `Array`.
+Create `Array` from iterator values.
 
 Basic example:
 `toArray(personsQuery);`
 
 Embedded example:
 `personsQuery.toArray();`
+
+### toSet
+Signature: `toSet<T>(source: Iterator<T>) => Set<T>`
+
+Create `Set` from iterator values.
+
+Basic example:
+`toSet(select(personQuery, p => p.name));`
+
+Embedded example:
+`personsQuery.select(p => p.name).toSet();`
+
+### toMap
+Signature:
+```typescript
+toMap<TKey, TValue>(source: Iterator<[TKey, TValue]>) => Map<TKey, TValue>
+```
+Signature with selectors:
+```typescript
+toMap<T, TKey, TValue>(
+    source: Iterator<T>,
+    keySelector: (item: T) => TKey,
+    ?valueSelector: (item: T) => TValue
+) => Map<TKey, TValue>
+```
+
+Create `Map` from iterator values.
+
+Basic example:
+```javascript
+toMap(personQuery, p => p.id); // map of persons
+toMap(personQuery, p => p.id, p => p.name); // map of names
+```
+
+Embedded example:
+```javascript
+personQuery.toMap(p => p.id); // map of persons
+personQuery.toMap(p => p.id, p => p.name); // map of names
+```
