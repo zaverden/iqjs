@@ -72,10 +72,13 @@ const valueProviders = {
   custom: { 'Custom IterableIterator': () => new IterableIterator() },
 };
 
+const skipMethodExistsCheck = new Set(['Array.concat']);
+
 module.exports = exports = {
   gen,
   IterableIterator,
   Iterator,
   valueProviders,
+  skipMethodExistsCheck,
   expectIterator
 };

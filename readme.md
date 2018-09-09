@@ -90,7 +90,7 @@ const idsQuery = personsArray.select(p => p.id);
 Concatenates two sequences.
 
 Signature:
-```javascript
+```typescript
 concat<T>(
     source: Iterator<T>,
     appendix: Iterator<T> | Iterable<T>
@@ -111,7 +111,7 @@ const personsQuery = childrenQuery.concat(adultsQuery);
 Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
 
 Signatures:
-```javascript
+```typescript
 aggregate<TSource>(
     source: Iterator<TSource>,
     fn: (acc: TSource, item: TSource) => TSource
@@ -171,7 +171,7 @@ const avgAge = personsQuery.aggregate(
 Creates an `Array` from iterator values.
 
 Signature:
-```javascript
+```typescript
 toArray<T>(source: Iterator<T>) => T[]
 ```
 
@@ -189,7 +189,7 @@ const personsArray = personsQuery.toArray();
 Creates a `Set` from iterator values.
 
 Signature:
-```javascript
+```typescript
 toSet<T>(source: Iterator<T>) => Set<T>
 ```
 

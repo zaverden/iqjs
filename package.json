@@ -1,6 +1,6 @@
 {
   "name": "jsiq",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dotnet LINQ inspired query methods for iterators",
   "main": "lib/iq.js",
   "author": "zaverden",

@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const iq = require('../../lib/iq');
 const embed = require('../../lib/embed');
-const { IterableIterator, valueProviders } = require('../test-help');
+const { IterableIterator, valueProviders, skipMethodExistsCheck } = require('../test-help');
 
 describe('embed', function () {
   afterEach(function () {
@@ -53,6 +53,9 @@ describe('embed', function () {
 function buildExpectAllMethodsExistSuite(embedFn, getFns, prefix = '') {
   for (let { name: method, key } of Object.values(iq)) {
     for (let [title, getFn] of Object.entries(getFns)) {
+      if (skipMethodExistsCheck.has(`${title}.${method}`)){
+        continue;
+      }
       it(`${prefix}IQ.${method} should be in ${title}`, function () {
         embedFn();
         const obj = getFn();
@@ -64,7 +67,6 @@ function buildExpectAllMethodsExistSuite(embedFn, getFns, prefix = '') {
   }
   it('should correctly process repeated embed', checkRepeatedEmbed(embedFn));
 }
-
 
 function buildExpectAllMethodsMissedSuite(embedFn, getFns) {
   for (let { name: method } of Object.values(iq)) {
