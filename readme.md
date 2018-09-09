@@ -44,7 +44,7 @@ const underage = toArray(where(personsMap.values(), p => p.age < 18));
 
 ## Methods
 ### where
-Filters `source` iterator by `predicate`.
+Filters a sequence of values based on a predicate.
 
 Signature:
 ```typescript
@@ -56,17 +56,17 @@ where<T>(
 
 Basic example:
 ```javascript
-where(personsArray, p => p.age > 18);
+const adultsQuery = where(personsArray, p => p.age > 18);
 ```
 
 Embedded example:
 ```javascript
-personsArray.where(p => p.age > 18);
+const adultsQuery = personsArray.where(p => p.age > 18);
 ```
 
 
 ### select
-Converts items from `source` using `selector`.
+Projects each element of a sequence into a new form.
 
 Signature:
 ```typescript
@@ -78,16 +78,16 @@ select<T, TResult>(
 
 Basic example:
 ```javascript
-select(personsArray, p => p.id);
+const idsQuery = select(personsArray, p => p.id);
 ```
 
 Embedded example:
 ```javascript
-personsArray.select(p => p.id);
+const idsQuery = personsArray.select(p => p.id);
 ```
 
 ### concat
-Concats 2 iterators.
+Concatenates two sequences.
 
 Signature:
 ```javascript
@@ -99,17 +99,76 @@ concat<T>(
 
 Basic example:
 ```javascript
-concat(childrenQuery, adultsQuery);
+const personsQuery = concat(childrenQuery, adultsQuery);
 ```
 
 Embedded example:
 ```javascript
-childrenQuery.concat(adultsQuery);
+const personsQuery = childrenQuery.concat(adultsQuery);
 ```
 
+### aggregate
+Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
+
+Signatures:
+```javascript
+aggregate<TSource>(
+    source: Iterator<TSource>,
+    fn: (acc: TSource, item: TSource) => TSource
+);
+
+aggregate<TSource, TResult>(
+    source: Iterator<TSource>,
+    fn: (acc: TSource, item: TSource) => TSource,
+    resultSelector: (acc: TSource) => TResult
+);
+
+aggregate<TSource, TAccumulate>(
+    source: Iterator<TSource>,
+    seed: TAccumulate,
+    fn: (acc: TAccumulate, item: TSource) => TAccumulate
+);
+
+aggregate<TSource, TAccumulate, TResult>(
+    source: Iterator<TSource>,
+    seed: TAccumulate,
+    fn: (acc: TAccumulate, item: TSource) => TAccumulate,
+    resultSelector: (acc: TAccumulate) => TResult
+);
+```
+
+Basic example:
+```javascript
+const sum = aggregate(integers, (sum, i) => sum + i);
+
+const sumSquare = aggregate(integers, (sum, i) => sum + i, sum => sum * sum);
+
+const totalSpent = aggregate(personsQuery, 0, (sum, p) => sum + p.spent);
+
+const avgAge = aggregate(personsQuery,
+    { ageSum: 0, count: 0 },
+    ({ ageSum, count }, p) => ({ ageSum: p.age + ageSum, count: count + 1 }),
+    ({ ageSum, count }) => ageSum / count
+);
+```
+
+Embedded example:
+```javascript
+const sum = integers.aggregate((sum, i) => sum + i);
+
+const sumSquare = integers.aggregate((sum, i) => sum + i, sum => sum * sum);
+
+const totalSpent = personsQuery.aggregate(0, (sum, p) => sum + p.spent);
+
+const avgAge = personsQuery.aggregate(
+    { ageSum: 0, count: 0 },
+    ({ ageSum, count }, p) => ({ ageSum: p.age + ageSum, count: count + 1 }),
+    ({ ageSum, count }) => ageSum / count
+);
+```
 
 ### toArray
-Create `Array` from iterator values.
+Creates an `Array` from iterator values.
 
 Signature:
 ```javascript
@@ -118,16 +177,16 @@ toArray<T>(source: Iterator<T>) => T[]
 
 Basic example:
 ```javascript
-toArray(personsQuery);
+const personsArray = toArray(personsQuery);
 ```
 
 Embedded example:
 ```javascript
-personsQuery.toArray();
+const personsArray = personsQuery.toArray();
 ```
 
 ### toSet
-Create `Set` from iterator values.
+Creates a `Set` from iterator values.
 
 Signature:
 ```javascript
@@ -136,38 +195,41 @@ toSet<T>(source: Iterator<T>) => Set<T>
 
 Basic example:
 ```javascript
-toSet(select(personQuery, p => p.name));
+const names = toSet(select(personQuery, p => p.name));
 ```
 
 Embedded example:
 ```javascript
-personsQuery.select(p => p.name).toSet();
+const names = personsQuery.select(p => p.name).toSet();
 ```
 
 ### toMap
-Create `Map` from iterator values.
+Creates a `Map` according to a specified key selector function and an value selector function.
 
-Signature:
+Signatures:
 ```typescript
 toMap<TKey, TValue>(source: Iterator<[TKey, TValue]>) => Map<TKey, TValue>
-```
-Signature with selectors:
-```typescript
+
+toMap<T, TKey>(
+    source: Iterator<T>,
+    keySelector: (item: T) => TKey
+) => Map<TKey, T>
+
 toMap<T, TKey, TValue>(
     source: Iterator<T>,
     keySelector: (item: T) => TKey,
-    ?valueSelector: (item: T) => TValue
+    valueSelector: (item: T) => TValue
 ) => Map<TKey, TValue>
 ```
 
 Basic example:
 ```javascript
-toMap(personQuery, p => p.id); // map of persons
-toMap(personQuery, p => p.id, p => p.name); // map of names
+const persons = toMap(personQuery, p => p.id);
+const names = toMap(personQuery, p => p.id, p => p.name);
 ```
 
 Embedded example:
 ```javascript
-personQuery.toMap(p => p.id); // map of persons
-personQuery.toMap(p => p.id, p => p.name); // map of names
+const persons = personQuery.toMap(p => p.id);
+const names = personQuery.toMap(p => p.id, p => p.name);
 ```
