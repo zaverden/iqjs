@@ -44,63 +44,109 @@ const underage = toArray(where(personsMap.values(), p => p.age < 18));
 
 ## Methods
 ### where
+Filters `source` iterator by `predicate`.
+
 Signature:
 ```typescript
 where<T>(
     source: Iterator<T>,
     predicate: (item: T) => boolean
-) => Iterator<T>
+) => IterableIterator<T>
 ```
 
-Filters `source` iterator by `predicate`.
-
 Basic example:
-`where(personsArray, p => p.age > 18);`
+```javascript
+where(personsArray, p => p.age > 18);
+```
 
 Embedded example:
-`personsArray.where(p => p.age > 18);`
+```javascript
+personsArray.where(p => p.age > 18);
+```
 
 
 ### select
+Converts items from `source` using `selector`.
+
 Signature:
 ```typescript
 select<T, TResult>(
     source: Iterator<T>,
     predicate: (item: T) => TResult
-) => Iterator<TResult>
+) => IterableIterator<TResult>
 ```
 
-Converts items from `source` using `selector`.
-
 Basic example:
-`select(personsArray, p => p.id);`
+```javascript
+select(personsArray, p => p.id);
+```
 
 Embedded example:
-`personsArray.select(p => p.id);`
+```javascript
+personsArray.select(p => p.id);
+```
+
+### concat
+Concats 2 iterators.
+
+Signature:
+```javascript
+concat<T>(
+    source: Iterator<T>,
+    appendix: Iterator<T> | Iterable<T>
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+concat(childrenQuery, adultsQuery);
+```
+
+Embedded example:
+```javascript
+childrenQuery.concat(adultsQuery);
+```
+
 
 ### toArray
-Signature: `toArray<T>(source: Iterator<T>) => T[]`
-
 Create `Array` from iterator values.
 
+Signature:
+```javascript
+toArray<T>(source: Iterator<T>) => T[]
+```
+
 Basic example:
-`toArray(personsQuery);`
+```javascript
+toArray(personsQuery);
+```
 
 Embedded example:
-`personsQuery.toArray();`
+```javascript
+personsQuery.toArray();
+```
 
 ### toSet
-Signature: `toSet<T>(source: Iterator<T>) => Set<T>`
-
 Create `Set` from iterator values.
 
+Signature:
+```javascript
+toSet<T>(source: Iterator<T>) => Set<T>
+```
+
 Basic example:
-`toSet(select(personQuery, p => p.name));`
+```javascript
+toSet(select(personQuery, p => p.name));
+```
 
 Embedded example:
-`personsQuery.select(p => p.name).toSet();`
+```javascript
+personsQuery.select(p => p.name).toSet();
+```
 
 ### toMap
+Create `Map` from iterator values.
+
 Signature:
 ```typescript
 toMap<TKey, TValue>(source: Iterator<[TKey, TValue]>) => Map<TKey, TValue>
@@ -113,8 +159,6 @@ toMap<T, TKey, TValue>(
     ?valueSelector: (item: T) => TValue
 ) => Map<TKey, TValue>
 ```
-
-Create `Map` from iterator values.
 
 Basic example:
 ```javascript
