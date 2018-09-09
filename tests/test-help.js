@@ -1,4 +1,19 @@
+const { expect } = require('chai');
 const SelfIterable = require('../lib/selfIterable');
+
+function expectIterator(iterator, values) {
+  expect(iterator).has.property(Symbol.iterator);
+  expect(iterator[Symbol.iterator]).to.be.a('function');
+  expect(iterator[Symbol.iterator]()).to.be.equal(iterator);
+
+  expect(iterator).has.property('next');
+  expect(iterator.next).to.be.a('function');
+
+  for (let value of values) {
+    expect(iterator.next()).is.deep.equal({ value, done: false });
+  }
+  expect(iterator.next()).to.have.a.property('done', true);
+}
 
 function* gen(n) {
   let i = 0;
@@ -61,5 +76,6 @@ module.exports = exports = {
   gen,
   IterableIterator,
   Iterator,
-  valueProviders
+  valueProviders,
+  expectIterator
 };
