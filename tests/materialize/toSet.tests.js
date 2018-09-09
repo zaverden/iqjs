@@ -21,6 +21,12 @@ describe('toSet', function () {
     expect(set).to.deep.equal(new Set([1, 2, 3]));
   });
 
+  it('should convert Iterator to set', function () {
+    const set = toSet(new Iterator(3));
+    expect(set).is.instanceOf(Set);
+    expect(set).to.deep.equal(new Set([1, 2, 3]));
+  });
+
   it('should make empty set from finished iterator', function () {
     const set = toSet(new Iterator(0));
     expect(set).is.instanceOf(Set).with.property('size', 0);

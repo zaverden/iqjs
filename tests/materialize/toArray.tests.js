@@ -21,6 +21,12 @@ describe('toArray', function () {
     expect(array).to.deep.equal([1, 2, 3]);
   });
 
+  it('should convert Iterator to array', function () {
+    const array = toArray(new Iterator(3));
+    expect(array).is.instanceOf(Array);
+    expect(array).to.deep.equal([1, 2, 3]);
+  });
+
   it('should make empty array from finished iterator', function () {
     const array = toArray(new Iterator(0));
     expect(array).is.instanceOf(Array).with.lengthOf(0);
