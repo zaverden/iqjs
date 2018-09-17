@@ -49,7 +49,7 @@ Filters a sequence of values based on a predicate.
 Signature:
 ```typescript
 where<T>(
-    source: Iterator<T>,
+    source: Iterator<T> | Iterable<T>,
     predicate: (item: T) => boolean
 ) => IterableIterator<T>
 ```
@@ -71,7 +71,7 @@ Projects each element of a sequence into a new form.
 Signature:
 ```typescript
 select<T, TResult>(
-    source: Iterator<T>,
+    source: Iterator<T> | Iterable<T>,
     predicate: (item: T) => TResult
 ) => IterableIterator<TResult>
 ```
@@ -92,7 +92,7 @@ Concatenates two sequences.
 Signature:
 ```typescript
 concat<T>(
-    source: Iterator<T>,
+    source: Iterator<T> | Iterable<T>,
     appendix: Iterator<T> | Iterable<T>
 ) => IterableIterator<T>
 ```
@@ -107,34 +107,62 @@ Embedded example:
 const personsQuery = childrenQuery.concat(adultsQuery);
 ```
 
+### distinct
+Returns distinct elements from a sequence.
+
+Signatures:
+```typescript
+distinct<T>(
+    source: Iterator<T>
+) => IterableIterator<T>
+
+distinct<T, TValue>(
+    source: Iterator<T> | Iterable<TSource>,
+    selector: (item: T) => TValue
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+const studentsQuery = distinct(studentsFromGroups);
+const personsWithUniqueName = distinct(persons, p => p.name);
+```
+
+Embedded example:
+```javascript
+const studentsQuery = studentsFromGroups.distinct();
+const personsWithUniqueName = persons.distinct(p => p.name);
+```
+
+
 ### aggregate
 Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
 
 Signatures:
 ```typescript
 aggregate<TSource>(
-    source: Iterator<TSource>,
+    source: Iterator<TSource> | Iterable<TSource>,
     fn: (acc: TSource, item: TSource) => TSource
-);
+) => TSource;
 
 aggregate<TSource, TResult>(
-    source: Iterator<TSource>,
+    source: Iterator<TSource> | Iterable<TSource>,
     fn: (acc: TSource, item: TSource) => TSource,
     resultSelector: (acc: TSource) => TResult
-);
+) => TResult;
 
 aggregate<TSource, TAccumulate>(
-    source: Iterator<TSource>,
+    source: Iterator<TSource> | Iterable<TSource>,
     seed: TAccumulate,
     fn: (acc: TAccumulate, item: TSource) => TAccumulate
-);
+) => TAccumulate;
 
 aggregate<TSource, TAccumulate, TResult>(
-    source: Iterator<TSource>,
+    source: Iterator<TSource> | Iterable<TSource>,
     seed: TAccumulate,
     fn: (acc: TAccumulate, item: TSource) => TAccumulate,
     resultSelector: (acc: TAccumulate) => TResult
-);
+) => TResult;
 ```
 
 Basic example:
