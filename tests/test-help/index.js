@@ -1,10 +1,10 @@
 const { expect } = require('chai');
-const SelfIterable = require('../lib/selfIterable');
+const SelfIterable = require('../../lib/selfIterable');
 
 function expectIterator(iterator, values) {
   expect(iterator).has.property(Symbol.iterator);
   expect(iterator[Symbol.iterator]).to.be.a('function');
-  expect(iterator[Symbol.iterator]()).to.be.equal(iterator);
+  expect(iterator[Symbol.iterator](), 'self iterable').to.be.equal(iterator);
 
   expect(iterator).has.property('next');
   expect(iterator.next).to.be.a('function');
@@ -22,6 +22,13 @@ function* gen(n) {
   }
 }
 
+function* genArr(arr) {
+  let i = 0;
+  while (i < arr.length) {
+    yield arr[i++];
+  }
+}
+
 class IterableIterator {
   next() {
     return { done: true };
@@ -32,15 +39,31 @@ class IterableIterator {
   }
 }
 
+class Iterable {
+  constructor(n) {
+    this.n = n;
+  }
+  [Symbol.iterator]() {
+    return new Iterator(this.n);
+  }
+}
+
 class Iterator {
   constructor(n) {
     this.i = 0;
-    this.n = n;
+    if (Array.isArray(n)){
+      this.n = n.length;
+      this.arr = n;
+    } else {
+      this.n = n;
+      this.arr = null;
+    }
   }
   next() {
     if (this.i < this.n) {
+      const i = this.i++;
       return {
-        value: ++this.i,
+        value: this.arr ? this.arr[i] : this.i,
         done: false
       };
     }
@@ -76,8 +99,10 @@ const skipMethodExistsCheck = new Set(['Array.concat']);
 
 module.exports = exports = {
   gen,
+  genArr,
   IterableIterator,
   Iterator,
+  Iterable,
   valueProviders,
   skipMethodExistsCheck,
   expectIterator
