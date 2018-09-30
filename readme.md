@@ -134,6 +134,47 @@ const studentsQuery = studentsFromGroups.distinct();
 const personsWithUniqueName = persons.distinct(p => p.name);
 ```
 
+### take
+Returns a specified number of contiguous elements from the start of a sequence.
+
+Signature:
+```typescript
+take<T>(
+    source: Iterator<T> | Iterable<T>,
+    count: number
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+const first2 = take(personsArray, 2);
+```
+
+Embedded example:
+```javascript
+const first2 = personsArray.take(2);
+```
+
+### skip
+Bypasses a specified number of elements in a sequence and then returns the remaining elements
+
+Signature:
+```typescript
+skip<T>(
+    source: Iterator<T> | Iterable<T>,
+    count: number
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+const excludeFirst2 = skip(personsArray, 2);
+```
+
+Embedded example:
+```javascript
+const excludeFirst2 = personsArray.skip(2);
+```
 
 ### aggregate
 Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
