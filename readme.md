@@ -44,13 +44,13 @@ const underage = toArray(where(personsMap.values(), p => p.age < 18));
 
 ## Methods
 ### where
-Filters a sequence of values based on a predicate.
+Filters a sequence of values based on a predicate. Each element's index is used in the logic of the predicate function.
 
 Signature:
 ```typescript
 where<T>(
     source: Iterator<T> | Iterable<T>,
-    predicate: (item: T) => boolean
+    predicate: (item: T, index: Number) => boolean
 ) => IterableIterator<T>
 ```
 
@@ -153,6 +153,28 @@ const first2 = take(personsArray, 2);
 Embedded example:
 ```javascript
 const first2 = personsArray.take(2);
+```
+
+### takeWhile
+Returns elements from a sequence as long as a specified condition is true.
+The element's index is used in the logic of the predicate function.
+
+Signature:
+```typescript
+takeWhile<T>(
+    source: Iterator<T> | Iterable<T>,
+    predicate: (item: T, index: Number) => boolean
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+const untilFirstFail = takeWhile(attempts, at => at.success);
+```
+
+Embedded example:
+```javascript
+const untilFirstFail = attempts.takeWhile(at => at.success);
 ```
 
 ### skip

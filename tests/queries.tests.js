@@ -8,6 +8,7 @@ const iqTests = [
   require('./test-cases/query/concat.cases'),
   require('./test-cases/query/skip.cases'),
   require('./test-cases/query/take.cases'),
+  require('./test-cases/query/takeWhile.cases'),
 ];
 
 describe('Queries', function () {
