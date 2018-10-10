@@ -198,6 +198,29 @@ Embedded example:
 const excludeFirst2 = personsArray.skip(2);
 ```
 
+### skipWhile
+Bypasses elements in a sequence as long as a specified condition is true and
+then returns the remaining elements. The element's index is used in the logic
+of the predicate function.
+
+Signature:
+```typescript
+skipWhile<T>(
+    source: Iterator<T> | Iterable<T>,
+    predicate: (item: T, index: Number) => boolean
+) => IterableIterator<T>
+```
+
+Basic example:
+```javascript
+const afterFirstFail = skipWhile(attempts, at => at.success);
+```
+
+Embedded example:
+```javascript
+const afterFirstFail = attempts.skipWhile(at => at.success);
+```
+
 ### aggregate
 Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
 
